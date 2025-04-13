@@ -1,0 +1,77 @@
+{
+    "attorney": {
+        "online_account_number": "A123456789",
+        "family_name": "Doe",
+        "first_name": "John",
+        "middle_name": "Michael",
+        "address_line_1": "123 Legal Avenue",
+        "unit_type": "Ste",
+        "address_line_2": "405",
+        "city": "Boston",
+        "state": "Massachusetts",
+        "zip_code": "02108",
+        "province": "",
+        "country": "United States",
+        "daytime_phone": "(617) 555-7890",
+        "email": "mdoe@legalfirm.com",
+        "fax": "6175554321",
+        "attorney_eligible": "yes",
+        "licensing_state": "MA",
+        "bar_number": "BBO#654321",
+        "subject_to_restrictions": "no",
+        "law_firm": "Doe & Associates Legal Group",
+        "is_nonprofit_rep": false,
+        "org_name": "",
+        "accreditation_date": "",
+        "associated_with_student": "no",
+        "law_student": "",
+        "administrative_case": true,
+        "administrative_matter": "I-485 Application to Register Permanent Residence",
+        "civil_case": false,
+        "civil_matter": "",
+        "other_legal": false,
+        "other_legal_matter": "",
+        "receipt_number": "MSC2190123456",
+        "client_type": "Beneficiary"
+    },
+    "client": {
+        "family_name": "Jones",
+        "first_name": "Jane",
+        "entity_name": "",
+        "entity_title": "",
+        "reference_number": "GRC-2023-0045",
+        "id_number": "A087654321",
+        "daytime_phone": "8575556789",
+        "mobile_phone": "8575559876",
+        "email": "jane.jones@email.com",
+        "address_line_1": "45 Commonwealth Avenue",
+        "unit_type": "",
+        "address_line_2": "",
+        "city": "Boston",
+        "state": "MA",
+        "zip_code": "02116",
+        "province": "",
+        "country": "US",
+        "send_notices_to_attorney": "Y",
+        "send_documents_to_attorney": "Y",
+        "send_documents_to_client": "N",
+        "signature_date": ""
+    },
+    "attorney_signature_date": "",
+    "additional_signature_date": "",
+    "part6": {
+        "additional_info": {
+            "family_name": "Johnson",
+            "given_name": "Sarah",
+            "middle_name": "Elizabeth",
+            "entries": [
+                {
+                    "page_number": "1",
+                    "part_number": "2",
+                    "item_number": "1.a",
+                    "additional_info": "Also licensed in New York State Bar, Bar #NY7654321"
+                }
+            ]
+        }
+    }
+}
