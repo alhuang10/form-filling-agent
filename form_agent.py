@@ -97,6 +97,7 @@ This is structured data with keys like 'family_name', 'email', 'zip_code', etc.
     - `page.select_option('#id', 'value')` for dropdowns
 - If a checkbox should not be checked (False/no/'N'), ignore it
 - If a label or field doesn't clearly match any user data field, ignore it
+- Do not fill any fields that require or represent a signature, including signature dates or attestations by an attorney, student, or organization representative.
 - Do not generate comments or explanation, only return Python code lines.
 
 Here is the field metadata:
