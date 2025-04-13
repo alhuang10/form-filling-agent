@@ -8,21 +8,28 @@ import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+DATA_PATH = "mock_data.json"
 
-# load data from mock_data.json
-with open("mock_data.json", "r") as f:
-    mock_data = json.load(f)
-    logging.info("Loaded mock data.")
+# ---------------- Initialization ---------------- #
+def load_mock_data(path):
+    with open(path, "r") as f:
+        logging.info("Loaded mock data.")
+        return json.load(f)
 
-# Get URL from command line
-if len(sys.argv) < 2:
-    logging.error("Usage: python form_filler.py <URL>")
-    sys.exit(1)
+def configure_genai():
+    api_key = os.environ.get("GOOGLE_API_KEY")
+    if not api_key:
+        logging.error("Missing GOOGLE_API_KEY in environment.")
+        sys.exit(1)
+    genai.configure(api_key=api_key)
 
-url = sys.argv[1]
-logging.info(f"Target form URL: {url}")
-
-genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
+def get_target_url():
+    if len(sys.argv) < 2:
+        logging.error("Usage: python form_filler.py <URL>")
+        sys.exit(1)
+    url = sys.argv[1]
+    logging.info(f"Target form URL: {url}")
+    return url
 
 def extract_rich_fields(page):
     logging.info("Extracting form field metadata...")
@@ -60,11 +67,8 @@ def extract_rich_fields(page):
     logging.info(f"Found {len(fields)} fields with rich metadata.")
     return fields
 
-
-def ask_gemini_to_map_fields(field_info, user_data):
-    logging.info("Sending field info and user data to Gemini Flash 2.0...")
-
-    prompt = f"""
+def generate_prompt(field_info, user_data):
+    return f"""
 You are an expert web automation agent.
 
 You will be given:
@@ -101,34 +105,26 @@ Here is the field metadata:
 Here is the person data:
 {json.dumps(user_data, indent=2)}
 """
-
+    
+def ask_gemini_to_map_fields(field_info, user_data) -> str:
+    logging.info("Sending field info and user data to Gemini Flash 2.0...")
     model = genai.GenerativeModel("gemini-2.0-flash")
+    prompt = generate_prompt(field_info, user_data)
     response = model.generate_content(prompt)
+    logging.info("Received code instructions from Gemini.")
+    code = response.text.replace("```python", "").replace("```", "")
+    return code
 
-    logging.info("Received instructions from Gemini.")
-    return response.text
-
-
-def main():
+def fill_form(url, mock_data):
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         page = browser.new_page()
-
         logging.info("Navigating to the target URL...")
         page.goto(url)
 
         field_info = extract_rich_fields(page)
-
         agent_generated_code = ask_gemini_to_map_fields(field_info, mock_data)
         
-        # Gemini specific post processing (TODO: refactor)
-        agent_generated_code = agent_generated_code.replace("```python", "")
-        agent_generated_code = agent_generated_code.replace("```", "")
-
-        # Save generated text to a file
-        with open("agent_generated_code.txt", "w") as f:
-            f.write(agent_generated_code)
-
         logging.info("Executing generated code...")
         try:
             exec(agent_generated_code, {"page": page})
@@ -138,6 +134,13 @@ def main():
         logging.info("Waiting to view the filled form before closing...")
         page.wait_for_timeout(1000000)
         browser.close()
+
+def main():
+    configure_genai()
+    mock_data = load_mock_data(DATA_PATH)
+    url = get_target_url()
+    fill_form(url, mock_data)
+    
 
 if __name__ == "__main__":
     main()
